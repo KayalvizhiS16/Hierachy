@@ -1,0 +1,367 @@
+import React, { useState } from 'react';
+import { Tree, TreeNode } from 'react-organizational-chart';
+import styled from 'styled-components';
+ 
+const Empdata = [
+    {
+      Emp_Id: 101,
+      Emp_name: "John Doe",
+      Role: "Developer",
+      Email: "john.doe@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 102,
+      Emp_name: "Jane Smith",
+      Role: " Developer",
+      Email: "jane.smith@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 103,
+      Emp_name: "Bob Johnson",
+      Role: "Developer",
+      Email: "bob.johnson@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 104,
+      Emp_name: "Alice Brown",
+      Role: "Developer",
+      Email: "alice.brown@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 105,
+      Emp_name: "Charlie Davis",
+      Role: "Developer",
+      Email: "charlie.davis@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 106,
+      Emp_name: "Eva Wilson",
+      Role: "Developer",
+      Email: "eva.wilson@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 107,
+      Emp_name: "David Miller",
+      Role: "Manager",
+      Email: "david.miller@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 108,
+      Emp_name: "Grace Taylor",
+      Role: "Manager",
+      Email: "grace.taylor@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 109,
+      Emp_name: "Frank Martinez",
+      Role: "Team Lead",
+      Email: "frank.martinez@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 110,
+      Emp_name: "Helen Johnson",
+      Role: "Developer",
+      Email: "helen.johnson@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 111,
+      Emp_name: "Jack Turner",
+      Role: "Developer",
+      Email: "jack.turner@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 112,
+      Emp_name: "Karen White",
+      Role: "Developer",
+      Email: "karen.white@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 113,
+      Emp_name: "Leonard Clark",
+      Role: "Developer",
+      Email: "leonard.clark@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 114,
+      Emp_name: "Megan Harris",
+      Role: "Developer",
+      Email: "megan.harris@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 115,
+      Emp_name: "Oscar Turner",
+      Role: "Developer",
+      Email: "oscar.turner@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 116,
+      Emp_name: "Pamela Brown",
+      Role: "Developer",
+      Email: "pamela.brown@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 117,
+      Emp_name: "Quincy Adams",
+      Role: "Developer",
+      Email: "quincy.adams@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 118,
+      Emp_name: "Rachel Green",
+      Role: "Developer",
+      Email: "rachel.green@example.com",
+      Active: true,
+    },
+    {
+      Emp_Id: 119,
+      Emp_name: "Samuel Taylor",
+      Role: "Team Lead",
+      Email: "samuel.taylor@example.com",
+      Active: false,
+    },
+    {
+      Emp_Id: 120,
+      Emp_name: "Tina Turner",
+      Role: "Developer",
+      Email: "tina.turner@example.com",
+      Active: true,
+    },
+  ];
+ 
+  const Hierarchy = () => {
+    const [selectedLayer, setSelectedLayer] = useState(null);
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedHierarchy, setSelectedHierarchy] = useState([]);
+    const [availableNames, setAvailableNames] = useState([]);
+ 
+    const handleLayerSelect = (layer) => {
+      setSelectedLayer(layer);
+      setSelectedRole(null);
+      setAvailableNames([]);
+      setSelectedHierarchy([]);
+    };
+ 
+    const handleAddButton = (role) => {
+      const employeesInRole = Empdata
+        .filter((employee) => employee.Role === role)
+        .map((employee) => ({ id: employee.Emp_Id, name: employee.Emp_name }));
+ 
+      setSelectedRole(role);
+      setAvailableNames(employeesInRole);
+ 
+      console.log(`Add button clicked for role: ${role}`);
+      console.log(`Employees in ${role}:`, employeesInRole.map(employee => employee.name).join(', '));
+    };
+ 
+    const handleDropdownChange = (selectedEmployeeId) => {
+      const selectedEmployee = availableNames.find(employee => employee.id == selectedEmployeeId);
+    console.log(selectedEmployeeId);
+    console.log(selectedEmployee);
+      if (selectedEmployee && selectedEmployee.id !== undefined) {
+        setSelectedHierarchy(prevHierarchy => [...prevHierarchy, selectedEmployee]);
+      } else {
+        console.error("Invalid selected employee:", selectedEmployee);
+      }
+    };
+    
+    
+    
+
+    
+    
+ 
+    const renderAddButton = (role) => (
+      <button
+        onClick={() => handleAddButton(role)}
+        className="bg-blue-500 text-white px-2 py-1 rounded"
+      >
+        Add
+      </button>
+    );
+ 
+    const renderDropdown = () => (
+  <div className="mt-2">
+    <label className="text-purple-600 font-bold">Select Employee:</label>
+    <select
+      value=""
+      onChange={(e) => handleDropdownChange(e.target.value)}
+      className="p-2 ml-2 border rounded"
+    >
+      <option value='' disabled>Select Employee</option>
+      {availableNames && availableNames.map((employee) => (
+        <option key={employee.id} value={employee.id}>{employee.name}</option>
+      ))}
+    </select>
+  </div>
+);
+
+ 
+    const renderTree = () => {
+      switch (selectedLayer) {
+        case 'Manager':
+          return (
+            <Tree
+              lineWidth={'2px'}
+              lineColor={'green'}
+              lineBorderRadius={'10px'}
+              label={
+                <StyledNode>
+                  HR Manager
+                  {renderAddButton('Manager')}
+                </StyledNode>
+              }
+            >
+              {selectedHierarchy.map(employee => (
+                <TreeNode key={employee.id} label={<StyledNode>{employee.name}</StyledNode>} />
+              ))}
+            </Tree>
+          );
+        case 'Team Lead':
+          return (
+            <Tree
+              lineWidth={'2px'}
+              lineColor={'green'}
+              lineBorderRadius={'10px'}
+              label={
+                <StyledNode>
+                  Manager
+                  {renderAddButton('Manager')}
+                </StyledNode>
+              }
+            >
+              <TreeNode
+                label={
+                  <StyledNode>
+                    Team Lead 1
+                    {renderAddButton('Team Lead')}
+                  </StyledNode>
+                }
+              >
+                {selectedHierarchy.map(employee => (
+                  <TreeNode key={employee.id} label={<StyledNode>{employee.name}</StyledNode>} />
+                ))}
+              </TreeNode>
+              <TreeNode
+                label={
+                  <StyledNode>
+                    Team Lead 2
+                    {renderAddButton('Team Lead')}
+                  </StyledNode>
+                }
+              >
+                {selectedHierarchy.map(employee => (
+                  <TreeNode key={employee.id} label={<StyledNode>{employee.name}</StyledNode>} />
+                ))}
+              </TreeNode>
+            </Tree>
+          );
+        case 'Developer':
+          return (
+            <Tree
+              lineWidth={'2px'}
+              lineColor={'green'}
+              lineBorderRadius={'10px'}
+              label={
+                <StyledNode>
+                  Manager
+                  {renderAddButton('Manager')}
+                </StyledNode>
+              }
+            >
+              <TreeNode
+                label={
+                  <StyledNode>
+                    Team Lead 1
+                    {renderAddButton('Team Lead')}
+                  </StyledNode>
+                }
+              >
+                {selectedHierarchy.map(employee => (
+                  <TreeNode key={employee.id} label={<StyledNode>{employee.name}</StyledNode>} />
+                ))}
+              </TreeNode>
+              <TreeNode
+                label={
+                  <StyledNode>
+                    Team Lead 2
+                    {renderAddButton('Team Lead')}
+                  </StyledNode>
+                }
+                >
+                {selectedHierarchy.map(employee => (
+                  <TreeNode key={employee.id} label={<StyledNode>{employee.name}</StyledNode>} />
+                ))}
+              </TreeNode>
+              <TreeNode
+                label={
+                  <StyledNode>
+                    Developer
+                    {renderAddButton('Developer')}
+                  </StyledNode>
+                }
+                >
+                {selectedHierarchy.map(employee => (
+                  <TreeNode key={employee.id} label={<StyledNode>{employee.name}</StyledNode>} />
+                  ))}
+              </TreeNode>
+                </Tree>
+          );
+        default:
+          return null;
+      }
+    };
+ 
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        <div className="p-4 bg-white shadow-lg rounded-md">
+          <div className="mb-4">
+            <label className="text-purple-600 font-bold">Select Layer:</label>
+            <select
+              value={selectedLayer}
+              onChange={(e) => handleLayerSelect(e.target.value)}
+              className="p-2 ml-2 border rounded"
+            >
+              <option value=''>Select Layer</option>
+              <option value='Manager'>Manager</option>
+              <option value='Team Lead'>Team Lead</option>
+              <option value='Developer'>Developer </option>
+            </select>
+          </div>
+          <div className="mt-4">
+            {renderTree()}
+            {selectedRole && renderDropdown()}
+          </div>
+        </div>
+      </div>
+    );
+  };
+ 
+  const StyledNode = styled.div`
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid red;
+    background-size: cover;
+    background-position: center;
+  `;
+ 
+  export default Hierarchy;
