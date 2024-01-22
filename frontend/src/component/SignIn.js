@@ -5,15 +5,15 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-//import axios from "axios";
-//import { useSnackbar } from "notistack";
-//import AuthContext from "../context/AuthContext";
+import axios from "axios";
+import { useSnackbar } from "notistack";
+import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../layout/Sidebar";
 
-const SignIn = () => {
-  // const { getLoggedIn } = useContext(AuthContext);
-  //const { enqueueSnackbar } = useSnackbar();
+const Login = () => {
+  const { getLoggedIn } = useContext(AuthContext)||{};
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const [result, setResult] = React.useState(false);
@@ -72,30 +72,30 @@ const SignIn = () => {
       return;
     }
 
-    // try {
-    //   //await axios
-    //     .post("http://localhost:5000/login", loginData)
-    //     .then((response) => {
-    //       console.log(response.data);
-    //       const { token } = response.data || {};
-    //       localStorage.setItem("token", token);
-    //     });
-    //   //getLoggedIn();
-    //   enqueueSnackbar("Login successful", { variant: "success" });
-    //   navigate("/userData");
-    //   setResult(true);
-    // } catch (error) {
-    //   enqueueSnackbar(error.response.data.message, { variant: "error" });
-    // }
+    try {
+      await axios
+        .post("http://localhost:5000/login", loginData)
+        .then((response) => {
+          console.log(response.data);
+          const { token } = response.data || {};
+          localStorage.setItem("token", token);
+        });
+      getLoggedIn();
+      enqueueSnackbar("Login successful", { variant: "success" });
+      navigate("/userData");
+      setResult(true);
+    } catch (error) {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    }
   };
 
   return (
     <div>
       <Sidebar/>
-      <div className="shadow-md p-5 w-96 mx-auto mt-24 flex items-center justify-center h-full">
+      <div className="shadow-md p-5 w-96 mx-auto mt-10 flex items-center justify-center h-full">
         <form onSubmit={handleOnSubmit}>
-          <h1 className="text-center font-semibold text-green-800 text-2xl">
-            SignIn
+          <h1 className="text-center font-semibold text-blue-800 text-2xl">
+            Login
           </h1>
           <TextField
             margin="dense"
@@ -128,8 +128,8 @@ const SignIn = () => {
             }}
           />
           <div className="my-5">
-            <Button variant="contained" color="success" fullWidth type="submit">
-            SignIn
+            <Button variant="contained" color="primary" fullWidth type="submit">
+              Login
             </Button>
           </div>
         </form>
@@ -138,5 +138,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
-
+export default Login;

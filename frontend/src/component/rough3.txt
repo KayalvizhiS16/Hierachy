@@ -1,0 +1,168 @@
+import React, { useState } from "react";
+import styled from "styled-components";
+import Sidebar from "../layout/Sidebar";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PersonIcon from "@mui/icons-material/Person";
+
+const Hierarchy = () => {
+  const [layers, setLayers] = useState([]);
+
+  const handleAddLayer = () => {
+    setLayers((prevLayers) => [
+      ...prevLayers,
+      {
+        name: `New Layer ${prevLayers.length + 1}`,
+        authority: "",
+        children: [],
+        imageUrl: `/images/image${prevLayers.length + 1}.jpg`,
+      },
+    ]);
+  };
+
+  const handleAddChildLayer = (parentIndex) => {
+    const parentLayer = layers[parentIndex];
+    if (parentLayer.children.length === 0) {
+      setLayers((prevLayers) => {
+        const newLayers = [...prevLayers];
+        newLayers[parentIndex].children.push({
+          name: `Child Layer ${newLayers[parentIndex].children.length + 1}`,
+          authority: "",
+          children: [],
+        });
+        return newLayers;
+      });
+    } else {
+      console.log(
+        "Child layer already exists. You can choose to handle this case differently."
+      );
+    }
+  };
+
+  const handleDeleteLayer = (parentIndex, childIndex) => {
+    setLayers((prevLayers) => {
+      const newLayers = [...prevLayers];
+      if (childIndex !== undefined) {
+        newLayers[parentIndex].children.splice(childIndex, 1);
+      } else {
+        newLayers.splice(parentIndex, 1);
+        newLayers.forEach((layer, index) => {
+          layer.name = `Layer ${index + 1}`;
+        });
+      }
+      return newLayers;
+    });
+  };
+
+  const handleAddAuthority = (parentIndex, childIndex) => {
+    const selectedLayer =
+      childIndex !== undefined
+        ? layers[parentIndex].children[childIndex]
+        : layers[parentIndex];
+    const authority = prompt("Select Authority: Manager, Team Lead, Developer");
+    if (
+      authority &&
+      ["Manager", "Team Lead", "Developer"].includes(authority)
+    ) {
+      selectedLayer.authority = authority;
+      setLayers([...layers]);
+    }
+  };
+
+  const renderLayers = (layers, parentIndex, childIndex) => {
+    return layers.map((layer, index) => (
+      <Node key={index}>
+        <NodeContent>
+          <NodeName>{layer.name}</NodeName>
+          <ActionButtonContainer>
+            <ActionButton onClick={() => handleAddChildLayer(parentIndex)}>
+              +
+            </ActionButton>
+            <ActionButton onClick={() => handleDeleteLayer(parentIndex, index)}>
+              <DeleteIcon />
+            </ActionButton>
+            <ActionButton onClick={() => handleAddAuthority(parentIndex, index)}>
+              <PersonIcon />
+            </ActionButton>
+          </ActionButtonContainer>
+          {layer.authority && <div>{`Authority: ${layer.authority}`}</div>}
+        </NodeContent>
+        {layer.children && renderLayers(layer.children, parentIndex, index)}
+      </Node>
+    ));
+  };
+
+  return (
+    <Container>
+      <Sidebar />
+      <AddLayerButton onClick={handleAddLayer}>Add Layer</AddLayerButton>
+      <TreeContainer>
+        {layers.map((layer, index) => (
+          <RootNode key={index}>
+            {renderLayers(layer.children, index)}
+          </RootNode>
+        ))}
+      </TreeContainer>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const TreeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const RootNode = styled.div`
+  margin: 10px;
+`;
+
+const Node = styled.div`
+  margin: 10px;
+`;
+
+const NodeContent = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const NodeName = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+const ActionButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-left: 10px;
+`;
+
+const ActionButton = styled.button`
+  background-color: #6b46c1;
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+`;
+
+const AddLayerButton = styled.button`
+  background-color: #6b46c1;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 14px;
+`;
+
+export default Hierarchy;

@@ -14,16 +14,16 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
-//import axios from "axios";
-//import { useSnackbar } from "notistack";
-//import { useNavigate } from "react-router-dom";
-//import AuthContext from "../context/AuthContext";
+import axios from "axios";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 import Sidebar from "../layout/Sidebar";
 
-const SignUp = () => {
-  //const { getLoggedIn } = useContext(AuthContext);
-  //const { enqueueSnackbar } = useSnackbar();
-  //const navigate = useNavigate();
+const Register = () => {
+  const { getLoggedIn } = useContext(AuthContext);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const intialState = {
     firstName: "",
     lastName: "",
@@ -124,43 +124,43 @@ const SignUp = () => {
     }
 
     console.log(formData);
-    // axios
-    //   .post(`${SERVER_PORT}/create-user`, {
-    //     firstName: formData.firstName,
-    //     lastName: formData.lastName,
-    //     email: formData.email,
-    //     password: formData.password,
-    //     gender: formData.gender,
-    //     role: formData.role,
-    //     age: formData.age,
-    //     active: formData.active,
-    //   })
-    //   .then((response) => {
-    //     const { token } = response.data || {};
-    //     localStorage.setItem("token", token);
-    //     setFormData(intialState);
-    //     if (response.data.message) {
-    //       console.log(response.data.message);
-    //      // enqueueSnackbar(response.data.message, { variant: "success" });
-    //      // getLoggedIn();
-    //       //navigate("/userData");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     if (err.response && err.response.data && err.response.data.message) {
-    //       console.log(err.response.data.message);
-    //       //enqueueSnackbar(err.response.data.message, { variant: "error" });
-    //     }
-    //   });
+    axios
+      .post(`${SERVER_PORT}/create-user`, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        gender: formData.gender,
+        role: formData.role,
+        age: formData.age,
+        active: formData.active,
+      })
+      .then((response) => {
+        const { token } = response.data || {};
+        localStorage.setItem("token", token);
+        setFormData(intialState);
+        if (response.data.message) {
+          console.log(response.data.message);
+          enqueueSnackbar(response.data.message, { variant: "success" });
+          getLoggedIn();
+          navigate("/login");
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.message) {
+          console.log(err.response.data.message);
+          enqueueSnackbar(err.response.data.message, { variant: "error" });
+        }
+      });
   };
 
   return (
     <div>
       <Sidebar/>
-      <div className="shadow-md p-5 md:w-96 w-fit mx-auto mt-24 flex items-center justify-center h-full">
+      <div className="shadow-md p-5 md:w-96 w-fit mx-auto mt-10 flex items-center justify-center h-full">
         <form method="post" onSubmit={(e) => handleOnSubmit(e)}>
           <h1 className="text-center font-semibold text-violet-800 text-2xl">
-          SignUp
+           Register
           </h1>
           <TextField
             margin="dense"
@@ -250,9 +250,9 @@ const SignUp = () => {
               label="Active"
               error={errors.role}
             >
-              <MenuItem value="Owner">Team Lead</MenuItem>
-              <MenuItem value="Super Admin">Developer</MenuItem>
-              <MenuItem value="Admin">HR Manager</MenuItem>
+              <MenuItem value="Owner">Owner</MenuItem>
+              <MenuItem value="Super Admin">Super Admin</MenuItem>
+              <MenuItem value="Admin">Admin</MenuItem>
               <MenuItem value="Manager">Manager</MenuItem>
             </Select>
             {errors.role && (
@@ -311,7 +311,7 @@ const SignUp = () => {
 
           <div className="my-5">
             <Button variant="contained" color="secondary" fullWidth type="submit">
-              SignUp
+              Register
             </Button>
           </div>
         </form>
@@ -320,4 +320,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Register;

@@ -1,0 +1,134 @@
+import React, { useState } from "react";
+import { PlusIcon, MinusIcon } from "@heroicons/react/solid"; // You need to install @heroicons/react
+
+// The data for the authority and name list
+const authorityData = [
+  { value: "manager", label: "Manager" },
+  { value: "teamlead", label: "Team Lead" },
+  { value: "developer", label: "Developer" },
+];
+
+const nameData = [
+  { value: "john", label: "John Doe" },
+  { value: "jane", label: "Jane Star" },
+  { value: "abram", label: "Abram Smith" },
+  // Add more names as needed
+];
+
+// A custom component to render each layer
+const Layer = ({ layer, onChange, onAdd, onDelete }) => {
+  // A function to handle the change of authority or name
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    onChange(layer.id, name, value);
+  };
+
+  // A function to handle the click of the plus icon
+  const handleAdd = () => {
+    onAdd(layer.id);
+  };
+
+  // A function to handle the click of the minus icon
+  const handleDelete = () => {
+    onDelete(layer.id);
+  };
+
+  return (
+    <div className="flex items-center gap-2 p-2 border-b">
+      <select
+        name="authority"
+        value={layer.authority}
+        onChange={handleChange}
+        className="p-2 rounded"
+      >
+        <option value="" disabled>
+          Select Authority
+        </option>
+        {authorityData.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <select
+        name="name"
+        value={layer.name}
+        onChange={handleChange}
+        className="p-2 rounded"
+      >
+        <option value="" disabled>
+          Select Name
+        </option>
+        {nameData.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div className="flex items-center gap-1">
+        <PlusIcon
+          className="h-6 w-6 text-green-500 cursor-pointer"
+          onClick={handleAdd}
+        />
+        <MinusIcon
+          className="h-6 w-6 text-red-500 cursor-pointer"
+          onClick={handleDelete}
+        />
+      </div>
+    </div>
+  );
+};
+
+// The main component to render the layers
+const Hierarchy = () => {
+  const [layers, setLayers] = useState([
+    { id: 1, authority: "", name: "" },
+    { id: 2, authority: "", name: "" },
+    { id: 3, authority: "", name: "" },
+  ]);
+
+  // A function to handle the change of authority or name in a layer
+  const handleChange = (id, name, value) => {
+    setLayers((prev) =>
+      prev.map((layer) =>
+        layer.id === id ? { ...layer, [name]: value } : layer
+      )
+    );
+  };
+
+  // A function to handle the add of a new layer
+  const handleAdd = (id) => {
+    setLayers((prev) => [
+      ...prev,
+      { id: prev.length + 1, authority: "", name: "" },
+    ]);
+  };
+
+  // A function to handle the delete of a layer
+  const handleDelete = (id) => {
+    setLayers((prev) => prev.filter((layer) => layer.id !== id));
+  };
+
+  return (
+    <div className="h-screen w-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="h-full w-full max-w-4xl max-h-96 bg-white rounded-lg shadow-lg overflow-y-auto">
+        <div className="flex items-center justify-center px-4 py-2 bg-purple-500 text-white">
+          <div className="text-lg font-bold">Architect Management System</div>
+        </div>
+        <div className="h-full w-full">
+          {layers.map((layer) => (
+            <Layer
+              key={layer.id}
+              layer={layer}
+              onChange={handleChange}
+              onAdd={handleAdd}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Hierarchy;
