@@ -18,7 +18,7 @@ import Sidebar from '../layout/Sidebar';
 const EmployeeGrid = () => {
   const [rowData, setRowData] = useState([]);
   const [open, setOpen] = useState(false);
-
+  const[selectedEmployeeName,setSelectedEmployeeName]=useState('');
   const [selectedEmployee, setSelectedEmployee] = useState([]);
 
   const handleClickOpen = () => {
@@ -46,11 +46,13 @@ const EmployeeGrid = () => {
       componentParent: this,
     },
     getContextMenuItems: (params) => {
+      console.log(setSelectedEmployeeName(params.value));
       const contextMenuItems = [
         {
           name: 'Report To',
           action: () => {
             handleClickOpen();
+           
           },
         },
         {
@@ -62,6 +64,7 @@ const EmployeeGrid = () => {
         },
       ];
 
+    
       return contextMenuItems;
     },
     processCellForContextMenu: (params) => {
@@ -78,6 +81,7 @@ const EmployeeGrid = () => {
 
       if (message === 'Data fetched successfully') {
         setRowData(db);
+        console.log(rowData);
       } else {
         console.log(message || 'No data found in the DB');
       }
@@ -85,15 +89,12 @@ const EmployeeGrid = () => {
       console.error(err.message);
     }
   };
-  const handleSubmission = async () => {
+  const handleSubmission = async (params) => {
     try {
-      const db=employees.map((employee) =>{
-        return employee?.name
-      })
-      const selectedEmployeesName=selectedEmployee.map((name)=>{
+     const selectedEmployeesName=selectedEmployee.map((name)=>{
        return name?.name})
       const response = await axios.post(`${serverURL}/create-flow`, {
-        empName:name,
+        employeeName:selectedEmployeeName?selectedEmployeeName:null,
         selectedEmployees: selectedEmployeesName,
         
         

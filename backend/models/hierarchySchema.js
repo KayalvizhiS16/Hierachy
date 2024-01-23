@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const hierarchySchema = new mongoose.Schema({
- empName:{
+ employeeName:{
   type:String,
  },
  selectedEmployees: {

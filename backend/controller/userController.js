@@ -20,17 +20,16 @@ const getUser = async (req, res) => {
 };
 //post
 const createFlow= async (req, res) => {
-  const { selectedEmployees } = req.body;
-console.log(req.body);
+  const { selectedEmployees,employeeName } = req.body;
   try {
    
    
     const newFlow = new hierarchy({
-     
-      selectedEmployees,
+     employeeName,
+    selectedEmployees,
     });
    const result=await newFlow.save()
-    res.status(200).json({ message: 'Selected employees submitted successfully' });
+    res.status(200).json({ message: 'Selected employees submitted successfully',result });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -43,7 +42,4 @@ console.log(req.body);
 module.exports = {
   getUser,
   createFlow,
- 
- 
- 
-};
+ };
