@@ -14,6 +14,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "ag-grid-community": "^31.0.2",
+    "ag-grid-enterprise": "^31.0.2",
     "ag-grid-react": "^31.0.2",
     "apexcharts": "^3.45.1",
     "axios": "^1.6.5",

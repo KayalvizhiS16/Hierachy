@@ -1,5 +1,5 @@
 const user = require("../models/userSchema.js");
-
+const hierarchy=require("../models/hierarchySchema.js")
 
 
 
@@ -18,12 +18,31 @@ const getUser = async (req, res) => {
     return res.status(500).send({ message: "Server  side error" });
   }
 };
+//post
+const createFlow= async (req, res) => {
+  const { selectedEmployees } = req.body;
+console.log(req.body);
+  try {
+   
+   
+    const newFlow = new hierarchy({
+     
+      selectedEmployees,
+    });
+   const result=await newFlow.save()
+    res.status(200).json({ message: 'Selected employees submitted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
       
 
 
 module.exports = {
-  getUser
+  getUser,
+  createFlow,
  
  
  
