@@ -20,7 +20,7 @@ const getUser = async (req, res) => {
 };
 //post
 const createFlow= async (req, res) => {
-  const { selectedEmployees,employeeName } = req.body;
+  const {employeeName,selectedEmployees } = req.body;
   try {
    
    
@@ -35,11 +35,21 @@ const createFlow= async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const getFlow= async (req, res) => {
+  try {
+    const flowData = await hierarchy.find();
+    res.json(flowData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
       
 
 
 module.exports = {
   getUser,
+  getFlow,
   createFlow,
  };
