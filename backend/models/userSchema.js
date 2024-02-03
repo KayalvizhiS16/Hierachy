@@ -7,15 +7,13 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+  role: {
+    type: String,
+  },
   email: {
     type: String,
-    unique: true,
   },
   phone: {
-    type: String,
-  },
- 
-  role: {
     type: String,
   },
   
